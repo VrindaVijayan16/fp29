@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contacts App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+    header {
+      background: indigo;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+    .search-box {
+      padding: 10px;
+      background: #fff;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .contact-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .contact-list li {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .contact-list li:hover {
+      background: #f0f0f0;
+    }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ccc;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .details {
+      flex-grow: 1;
+    }
+    .name {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .phone {
+      font-size: 14px;
+      color: gray;
+    }
+    .detail-view {
+      display: none;
+      padding: 20px;
+    }
+    .detail-view.active {
+      display: block;
+      background: white;
+    }
+    .detail-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 20px auto;
+      overflow: hidden;
+    }
+    .detail-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .back-btn {
+      background: indigo;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header>Contacts</header>
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search contacts..." />
+  </div>
+
+  <ul id="contactList" class="contact-list"></ul>
+
+  <div id="detailView" class="detail-view">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    <div class="detail-avatar"><img id="detailImg" alt=""></div>
+    <h2 id="detailName"></h2>
+    <p><b>Phone:</b> <span id="detailPhone"></span></p>
+    <p><b>Email:</b> <span id="detailEmail"></span></p>
+  </div>
+
+  <script>
+    const contacts = [
+      { name: "Aarav Krishna", phone: "+91 98765 43210", email: "aarav@example.com", image: "https://randomuser.me/api/portraits/men/32.jpg" },
+      { name: "Ananya Krishna", phone: "+91 99876 54321", email: "ananya@example.com", image: "https://randomuser.me/api/portraits/women/44.jpg" },
+      { name: "Bhavesh Gopal", phone: "+91 98760 11122", email: "bhavesh@example.com", image: "https://randomuser.me/api/portraits/men/45.jpg" },
+      { name: "Devika Iyer", phone: "+91 98989 33344", email: "devika@example.com", image: "https://randomuser.me/api/portraits/women/46.jpg" },
+      { name: "Rohit Kumar", phone: "+91 95678 90123", email: "rohit@example.com", image: "https://randomuser.me/api/portraits/men/47.jpg" },
+      { name: "Sanya Malhotra", phone: "+91 96789 01234", email: "sanya@example.com", image: "https://randomuser.me/api/portraits/women/48.jpg" },
+      { name: "Vihaan Das", phone: "+91 97890 12345", email: "vihaan@example.com", image: "https://randomuser.me/api/portraits/men/49.jpg" }
+    ];
+
+    const listEl = document.getElementById("contactList");
+    const detailView = document.getElementById("detailView");
+    const searchInput = document.getElementById("search");
+
+    function renderList(filter = "") {
+      listEl.innerHTML = "";
+      contacts
+        .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(c => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div class="avatar"><img src="${c.image}" alt="${c.name}"></div>
+            <div class="details">
+              <div class="name">${c.name}</div>
+              <div class="phone">${c.phone}</div>
+            </div>
+          `;
+          li.onclick = () => showDetail(c);
+          listEl.appendChild(li);
+        });
+    }
+
+    function showDetail(contact) {
+      document.getElementById("detailImg").src = contact.image;
+      document.getElementById("detailName").textContent = contact.name;
+      document.getElementById("detailPhone").textContent = contact.phone;
+      document.getElementById("detailEmail").textContent = contact.email;
+      listEl.style.display = "none";
+      document.querySelector(".search-box").style.display = "none";
+      detailView.classList.add("active");
+    }
+
+    function goBack() {
+      detailView.classList.remove("active");
+      listEl.style.display = "block";
+      document.querySelector(".search-box").style.display = "block";
+    }
+
+    searchInput.addEventListener("input", (e) => renderList(e.target.value));
+
+    renderList();
+  </script>
+</body>
+</html>
